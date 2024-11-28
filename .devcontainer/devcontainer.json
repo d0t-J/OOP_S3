@@ -17,12 +17,5 @@
     },
   "features": {
         "ghcr.io/devcontainers/features/flutter:1": {}
-    },
-    // Forward necessary ports for Flutter
-    "forwardPorts": [
-        3000,
-        8080
-    ],
-    // Specify any initialization scripts or commands
-    "postCreateCommand": "flutter doctor && flutter pub get"
+    }
 }
