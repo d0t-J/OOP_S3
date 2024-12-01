@@ -1,0 +1,21 @@
+{
+    // Name this configuration
+    "name": "Codespace for Skills!",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "GitHub.copilot",
+                "Dart-Code.dart-code",
+                "Dart-Code.flutter",
+                "ms-vscode.vscode-typescript-tslint-plugin",
+                "redhat.vscode-yaml",
+                "eamodio.gitlens",
+                "esbenp.prettier-vscode",
+                "streetsidesoftware.code-spell-checker"
+            ]
+        }
+    },
+  "features": {
+        "ghcr.io/devcontainers/features/flutter:1": {}
+    }
+}
