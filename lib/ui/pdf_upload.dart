@@ -1,40 +1,69 @@
-import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+//! https://stackoverflow.com/questions/66685607/how-to-upload-files-pdf-doc-image-from-file-picker-to-api-server-on-flutter
+//!https://stackoverflow.com/questions/49233934/how-to-open-and-pdf-or-word-document-in-the-flutter
+//! https://stackoverflow.com/questions/76238373/how-to-view-pdf-in-flutter
+//! StackOverflow.com
+//! Reference for Uploading Files to API server on Flutter
 
-class PDFUploadPage extends StatelessWidget {
-  const PDFUploadPage({Key? key}) : super(key: key);
+//! https://pub.dev/packages/pdf_viewer_plugin
+//! Reference for PDF Viewer Plugin
+
+//! https://help.syncfusion.com/flutter/pdf-viewer/text-selection
+//! Reference for Text Selection in PDF Viewer through Syncfusion PDF Viewer
+
+import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
+import '../services/pdf_service.dart';
+import 'package:logging/logging.dart';
+
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
+  @override
+  HomeScreenState createState() => HomeScreenState();
+}
+
+class HomeScreenState extends State<HomeScreen> {
+  String? filePath;
+  final PdfService pdfService = PdfService();
+  final Logger _logger = Logger("HomeScreenState");
 
   Future<void> pickFile() async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['pdf'],
-    );
+    final result = await FilePicker.platform
+        .pickFiles(type: FileType.custom, allowedExtensions: ['pdf']);
+    if (result != null) {
+      setState(() {
+        filePath = result.files.single.path;
+      });
+    }
+  }
 
-    if (result == null) {
-      Fluttertoast.showToast(msg: 'No file selected');
-      return;
-    } else {
-      //! final file = result.files.single.path!;
-      final file = result.files.single;
-      Fluttertoast.showToast(msg: 'File picked: ${file.name}');
-      //TODO: Upload the file to a PDF processing service
-      //* Steps
-      //* 1. Create an HTTP request to the PDF processing service ( check services\pdf_service.dart ).
-      //* 2. Attach the picked file to the request.
-      //* 3. Send the request and handle the response.
-      //* 4. Show a success or error message based on the response.
+
+  Future<void> extractPdfContent() async {
+    if (filePath != null) {
+      final text = await pdfService.extractText(filePath!);
+      _logger.info("Extracted Text: $text");
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('PDF Upload')),
+      appBar: AppBar(title: Text("PDF Handling")),
+      
       body: Center(
-        child: ElevatedButton(
-          onPressed: pickFile,
-          child: const Text('Pick a PDF file'),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: pickFile,
+              child: Text("Upload PDF"),
+            ),
+            if (filePath != null)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text("Selected File: $filePath"),
+              ),
+          ],
         ),
       ),
     );
