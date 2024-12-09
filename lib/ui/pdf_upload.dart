@@ -48,8 +48,10 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("PDF Handling")),
-      
+      appBar: AppBar(
+        title: Text("PDF Handling"),
+        backgroundColor: Colors.blue, // Added color for AppBar
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
