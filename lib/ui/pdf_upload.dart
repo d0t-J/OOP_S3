@@ -37,7 +37,6 @@ class HomeScreenState extends State<HomeScreen> {
     }
   }
 
-
   Future<void> extractPdfContent() async {
     if (filePath != null) {
       final text = await pdfService.extractText(filePath!);
@@ -59,6 +58,7 @@ class HomeScreenState extends State<HomeScreen> {
             ElevatedButton(
               onPressed: pickFile,
               child: Text("Upload PDF"),
+              // Fix: Add bytes property for PDF file
             ),
             if (filePath != null)
               Padding(
