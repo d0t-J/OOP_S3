@@ -10,10 +10,10 @@
 //! https://help.syncfusion.com/flutter/pdf-viewer/text-selection
 //! Reference for Text Selection in PDF Viewer through Syncfusion PDF Viewer
 
-import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
-import '../services/pdf_service.dart';
+import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
+import '../services/pdf_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -33,6 +33,7 @@ class HomeScreenState extends State<HomeScreen> {
     if (result != null) {
       setState(() {
         filePath = result.files.single.path;
+        // Fix: Add bytes property for PDF file
       });
     }
   }
@@ -49,7 +50,7 @@ class HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text("PDF Handling"),
-        backgroundColor: Colors.blue, // Added color for AppBar
+        backgroundColor: Colors.blue,
       ),
       body: Center(
         child: Column(
@@ -58,7 +59,6 @@ class HomeScreenState extends State<HomeScreen> {
             ElevatedButton(
               onPressed: pickFile,
               child: Text("Upload PDF"),
-              // Fix: Add bytes property for PDF file
             ),
             if (filePath != null)
               Padding(

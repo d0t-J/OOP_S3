@@ -9,4 +9,3 @@ class PdfService {
     return extractedText;
   }
 }
-
