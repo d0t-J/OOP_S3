@@ -12,11 +12,10 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color.fromARGB(255, 99, 52, 187)),
+            seedColor: const Color.fromARGB(255, 47, 6, 122)),
         useMaterial3: true,
       ),
       home: const HomeScreen(),
     );
   }
-
 }
