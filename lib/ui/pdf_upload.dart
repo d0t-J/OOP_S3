@@ -40,8 +40,12 @@ class HomeScreenState extends State<HomeScreen> {
 
   Future<void> extractPdfContent() async {
     if (filePath != null) {
-      final text = await pdfService.extractText(filePath!);
-      _logger.info("Extracted Text: $text");
+      try {
+        final text = await pdfService.extractText(filePath!);
+        _logger.info("Extracted Text: $text");
+      } catch (e) {
+        _logger.severe("Fauled to extract content");
+      }
     }
   }
 
