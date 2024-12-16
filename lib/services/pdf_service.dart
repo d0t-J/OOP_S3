@@ -9,6 +9,7 @@ class PdfService {
     // String extractedText = await pdfDoc.text;
     // return extractedText;
 
+    //! Syncfusion
     final PdfDocument document =
         PdfDocument(inputBytes: File(filePath).readAsBytesSync());
     String text = PdfTextExtractor(document).extractText();

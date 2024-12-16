@@ -24,6 +24,7 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   String? filePath;
+  String? extractedText;
   final PdfService pdfService = PdfService();
   final Logger _logger = Logger("HomeScreenState");
 
@@ -33,8 +34,10 @@ class HomeScreenState extends State<HomeScreen> {
     if (result != null) {
       setState(() {
         filePath = result.files.single.path;
-        // Fix: Add bytes property for PDF file
+        extractedText = null;
+        // Fix: Add bytes property for PDF file ( web issue )
       });
+      await extractPdfContent();
     }
   }
 
@@ -42,9 +45,12 @@ class HomeScreenState extends State<HomeScreen> {
     if (filePath != null) {
       try {
         final text = await pdfService.extractText(filePath!);
+        setState(() {
+          extractedText = text;
+        });
         _logger.info("Extracted Text: $text");
       } catch (e) {
-        _logger.severe("Fauled to extract content");
+        _logger.severe("Failed to extract content");
       }
     }
   }
@@ -68,6 +74,11 @@ class HomeScreenState extends State<HomeScreen> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text("Selected File: $filePath"),
+              ),
+            if (extractedText != null)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text("Extracted Text: $extractedText"),
               ),
           ],
         ),
