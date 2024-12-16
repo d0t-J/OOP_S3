@@ -8,7 +8,7 @@
 //! Reference for PDF Viewer Plugin
 
 //! https://help.syncfusion.com/flutter/pdf-viewer/text-selection
-//! Reference for Text Selection in PDF Viewer through Syncfusion PDF Viewer
+//! (Preferred and used for the current build) Reference for Text Selection in PDF Viewer through Syncfusion PDF Viewer
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
