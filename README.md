@@ -31,7 +31,7 @@ The `file_picker` package references its own platform-specific implementations a
 
 ##### Why is this Error of No Concern to Us
 
-This issue is relevant for the Windows, Linux, and macOS platforms. However, it does not affect this project as it is focused solely on Android app development.
+This issue is relevant to the Windows, Linux, and macOS platforms. However, it does not affect this project as it is focused solely on Android app development.
 
 #### Warning 3
 
