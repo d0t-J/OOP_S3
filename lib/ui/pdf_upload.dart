@@ -63,6 +63,10 @@ class PdfUploadScreenStateState extends State<PdfUploadScreenState> {
     }
   }
 
+  String getFileName(String filePath) {
+    return filePath.split('/').last;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,7 +85,7 @@ class PdfUploadScreenStateState extends State<PdfUploadScreenState> {
             if (filePath != null)
               Padding(
                 padding: const EdgeInsets.all(3.0),
-                child: Text("Selected File: ${path.basename(filePath)}"),
+                child: Text("Selected File: ${getFileName(filePath!)}"),
               ),
           ],
         ),
