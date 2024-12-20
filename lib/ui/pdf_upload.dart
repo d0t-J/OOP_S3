@@ -12,7 +12,6 @@
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart' as path;
 import 'package:logging/logging.dart';
 import '../modules/pdf/pdf_service.dart';
 import '../screens/translation_screen.dart';
@@ -51,12 +50,14 @@ class PdfUploadScreenStateState extends State<PdfUploadScreenState> {
           extractedText = text;
         });
         _logger.info("Extracted Text: $text");
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => TranslationScreen(
-                      extractedText: text,
-                    )));
+        if (mounted) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => TranslationScreen(
+                        extractedText: text,
+                      )));
+        }
       } catch (e) {
         _logger.severe("Failed to extract content");
       }
