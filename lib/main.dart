@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+// import 'package:test_/screens/translation_screen.dart';
 import '../ui/pdf_upload.dart';
 
 void main() => runApp(const MyApp());
@@ -15,8 +16,7 @@ class MyApp extends StatelessWidget {
             seedColor: const Color.fromARGB(255, 47, 6, 122)),
         useMaterial3: true,
       ),
-      home: const HomeScreen(),
+      home: const PdfUploadScreenState(),
     );
   }
-
 }

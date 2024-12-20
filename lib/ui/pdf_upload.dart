@@ -8,25 +8,27 @@
 //! Reference for PDF Viewer Plugin
 
 //! https://help.syncfusion.com/flutter/pdf-viewer/text-selection
-//! (Preferred and used for the current build) Reference for Text Selection in PDF Viewer through Syncfusion PDF Viewer
+//! Reference for Text Selection in PDF Viewer through Syncfusion PDF Viewer
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart' as path;
 import 'package:logging/logging.dart';
-import '../services/pdf_service.dart';
+import '../modules/pdf/pdf_service.dart';
+import '../screens/translation_screen.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class PdfUploadScreenState extends StatefulWidget {
+  const PdfUploadScreenState({super.key});
 
   @override
-  HomeScreenState createState() => HomeScreenState();
+  PdfUploadScreenStateState createState() => PdfUploadScreenStateState();
 }
 
-class HomeScreenState extends State<HomeScreen> {
+class PdfUploadScreenStateState extends State<PdfUploadScreenState> {
   String? filePath;
   String? extractedText;
   final PdfService pdfService = PdfService();
-  final Logger _logger = Logger("HomeScreenState");
+  final Logger _logger = Logger("PdfUploadScreenStateState");
 
   Future<void> pickFile() async {
     final result = await FilePicker.platform
@@ -49,6 +51,12 @@ class HomeScreenState extends State<HomeScreen> {
           extractedText = text;
         });
         _logger.info("Extracted Text: $text");
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => TranslationScreen(
+                      extractedText: text,
+                    )));
       } catch (e) {
         _logger.severe("Failed to extract content");
       }
@@ -72,13 +80,8 @@ class HomeScreenState extends State<HomeScreen> {
             ),
             if (filePath != null)
               Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text("Selected File: $filePath"),
-              ),
-            if (extractedText != null)
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text("Extracted Text: $extractedText"),
+                padding: const EdgeInsets.all(3.0),
+                child: Text("Selected File: ${path.basename(filePath)}"),
               ),
           ],
         ),
