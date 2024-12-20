@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../../utils/api_constants.dart';
+import '../../api_constants.dart';
 
 class TranslationService {
   final String apiKey = ApiConstants.azureTranslateApiKey;
