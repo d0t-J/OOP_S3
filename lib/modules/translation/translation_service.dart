@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:logging/logging.dart';
 import '../../utils/api_constants.dart';
 
 class TranslationService {
@@ -7,7 +8,8 @@ class TranslationService {
   final String endpoint =
       "https://api.cognitive.microsofttranslator.com/translate?api-version=3.0";
   final String region = ApiConstants.azureRegion;
-  // "https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&to=en&from=ur";
+
+  final Logger _logger = Logger('TranslationService');
 
   Future<String> translateText(String text, String targetLanguage) async {
     final url = Uri.parse('$endpoint&to=$targetLanguage&textType=plain');
@@ -23,13 +25,13 @@ class TranslationService {
     ]);
 
     //? Debug: Log the request details
-    print('Request URL: $url');
-    print('Request Headers: $Headers');
-    print('Request Body: $Body');
+    _logger.info('Request URL: $url');
+    _logger.info('Request Headers: $Headers');
+    _logger.info('Request Body: $Body');
 
     final response = await http.post(url, headers: Headers, body: Body);
 
-    print("Response Body: $response.body");
+    _logger.info('Response Body: ${response.body}');
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
