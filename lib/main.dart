@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-// import 'package:test_/screens/translation_screen.dart';
 import '../ui/pdf_upload.dart';
 
 void main() => runApp(const MyApp());

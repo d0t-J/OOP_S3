@@ -46,4 +46,7 @@ app.*.map.json
 
 
 # API
-/lib/api_constants.dart
+api_constants.dart
+.env
+.env.local
+env.dart
