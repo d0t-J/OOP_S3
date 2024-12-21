@@ -4,9 +4,11 @@
 
 #### Warning 1
 
+```
 **Warning:** SDK processing. This version only understands SDK XML versions up to 3 but an SDK XML file of version 4 was encountered. This can happen if you use versions of Android Studio and the command-line tools that were released at different times.
+```
 
-    **Reason:**
+**Reason:**
 
 1. **Outdated SDK Tools:** Your SDK tools might be outdated and do not support the newer XML version.
 2. **Version Mismatch:** You might be using a newer version of Android Studio that generates SDK XML files of version 4, but your command-line tools are older and only understand up to version 3.
