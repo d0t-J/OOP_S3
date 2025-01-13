@@ -6,9 +6,9 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 //! Add a .env file to the root of the directory and paste the environment vars in the .env file
 
 class TranslationService {
-  final String apiKey = dotenv.env['AZURE_TRANSLATOR_KEY']!;
   final String endpoint =
       "https://api.cognitive.microsofttranslator.com/translate?api-version=3.0";
+  final String apiKey = dotenv.env['AZURE_TRANSLATOR_KEY']!;
   final String region = dotenv.env['AZURE_TRANSLATOR_REGION']!;
 
   final Logger _logger = Logger('TranslationService');
