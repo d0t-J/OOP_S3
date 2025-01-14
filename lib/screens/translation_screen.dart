@@ -26,7 +26,7 @@ class TranslationScreenState extends State<TranslationScreen> {
       setState(() => _translatedText = result.translatedText);
       print("Translated Text: $_translatedText");
     } catch (e) {
-      print("Translation Error: $e");
+      setState(() => _translatedText = "Error occurred while translating $e");
     } finally {
       setState(() => _isLoading = false);
     }
