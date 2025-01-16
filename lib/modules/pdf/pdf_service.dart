@@ -11,6 +11,7 @@ class PdfService {
   }
 
   String _optimizeText(String text) {
-    return text.replaceAll('\n', ' ').replaceAll('\r', ' ');
+    text = text.replaceAll(RegExp(r'\s+'), ' ');
+    return text;
   }
 }
