@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../ui/pdf_upload.dart';
+import 'screens/pdf/pdf_upload.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {

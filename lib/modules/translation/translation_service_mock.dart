@@ -1,4 +1,4 @@
-import 'translation_service.dart';
+import '../../api/translation/translation_service.dart';
 
 class MockTranslationService extends TranslationService {
   @override

@@ -1,5 +1,5 @@
-import 'package:test_/modules/translation/translation_service.dart';
-import 'package:test_/models/translation_model.dart';
+import 'package:test_/api/translation/translation_service.dart';
+import 'package:test_/models/translation/translation_model.dart';
 // import 'package:test_/modules/translation/translation_service_mock.dart';
 
 class TranslationRepository {

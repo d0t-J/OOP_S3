@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:test_/modules/translation/translation_repository.dart';
-import 'package:test_/models/translation_model.dart';
+import 'package:test_/models/translation/translation_model.dart';
 import 'package:test_/widgets/loading.dart';
 
 class TranslationScreen extends StatefulWidget {

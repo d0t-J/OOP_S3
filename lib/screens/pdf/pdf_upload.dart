@@ -13,8 +13,8 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
-import '../modules/pdf/pdf_service.dart';
-import '../screens/translation_screen.dart';
+import '../../modules/pdf/readPDF.dart';
+import '../query/translation_screen.dart';
 
 class PdfUploadScreenState extends StatefulWidget {
   const PdfUploadScreenState({super.key});
