@@ -2,10 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:test_/modules/translation/translation_repository.dart';
 import 'package:test_/models/translation/translation_model.dart';
 import 'package:test_/widgets/loading.dart';
+import "package:test_/api/query/RAG.dart";
+import "package:logging/logging.dart";
 
 class TranslationScreen extends StatefulWidget {
   final String extractedText;
-  const TranslationScreen({required this.extractedText, Key? key})
+  final String fileName;
+
+  const TranslationScreen(
+      {required this.extractedText, required this.fileName, Key? key})
       : super(key: key);
 
   @override
@@ -14,21 +19,50 @@ class TranslationScreen extends StatefulWidget {
 
 class TranslationScreenState extends State<TranslationScreen> {
   final TranslationRepository _repository = TranslationRepository();
+  final Logger _logger = Logger("Translation Screen.dart");
   String _translatedText = "";
   bool _isLoading = false;
 
   void _handleTranslation() async {
     setState(() => _isLoading = true);
     try {
-      print("Extracted Text: ${widget.extractedText}");
+      _logger.info("Extracted Text: ${widget.extractedText}");
       TranslationResult result =
           await _repository.translate(widget.extractedText, 'en');
       setState(() => _translatedText = result.translatedText);
-      print("Translated Text: $_translatedText");
+      _logger.info("Translated Text: $_translatedText");
+
+      if (_translatedText.isNotEmpty) {
+        setState(() => _isLoading = false);
+        await _uploadToPinecone();
+      } else {
+        _logger
+            .warning("Translated text is empty. Skipping upload to Pinecone.");
+      }
     } catch (e) {
       setState(() => _translatedText = "Error occurred while translating $e");
     } finally {
       setState(() => _isLoading = false);
+    }
+  }
+
+  Future<Map<String, dynamic>> _uploadToPinecone() async {
+    if (_translatedText.isEmpty) {
+      _logger.warning("Translated text is empty. Skipping upload to Pinecone.");
+      return {};
+    }
+
+    final RAG rag = RAG();
+
+    try {
+      final Map<String, dynamic> indexResponse =
+          await rag.indexTextIntoPinecone(_translatedText, widget.fileName);
+      _logger.info("Index Upload Response: $indexResponse");
+      print("Index Upload Response: $indexResponse");
+      return indexResponse;
+    } catch (e) {
+      _logger.warning("Failed to upload to Pinecone due to error: $e");
+      throw Exception("Failed to upload to Pinecone: $e");
     }
   }
 
@@ -53,7 +87,7 @@ class TranslationScreenState extends State<TranslationScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                "Translation Module",
+                "Translation",
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,

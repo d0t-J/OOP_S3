@@ -25,6 +25,7 @@ class PdfUploadScreenState extends StatefulWidget {
 
 class PdfUploadScreenStateState extends State<PdfUploadScreenState> {
   String? filePath;
+  String? fileName;
   String? extractedText;
   final PdfService pdfService = PdfService();
   final Logger _logger = Logger("PdfUploadScreenStateState");
@@ -35,6 +36,7 @@ class PdfUploadScreenStateState extends State<PdfUploadScreenState> {
     if (result != null) {
       setState(() {
         filePath = result.files.single.path;
+        fileName = getFileName(filePath!);
         extractedText = null;
         // Fix: Add bytes property for PDF file ( web issue )
       });
@@ -56,10 +58,11 @@ class PdfUploadScreenStateState extends State<PdfUploadScreenState> {
               MaterialPageRoute(
                   builder: (context) => TranslationScreen(
                         extractedText: text,
+                        fileName: fileName!,
                       )));
         }
       } catch (e) {
-        _logger.severe("Failed to extract content");
+        _logger.severe("Failed to extract content. Error $e");
       }
     }
   }
@@ -72,7 +75,7 @@ class PdfUploadScreenStateState extends State<PdfUploadScreenState> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("PDF Handling"),
+        title: Text("Upload File"),
         backgroundColor: Colors.blue,
       ),
       body: Center(
@@ -81,7 +84,7 @@ class PdfUploadScreenStateState extends State<PdfUploadScreenState> {
           children: [
             ElevatedButton(
               onPressed: pickFile,
-              child: Text("Upload PDF"),
+              child: Text("PDF"),
             ),
             if (filePath != null)
               Padding(
