@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:logging/logging.dart';
+// import 'package:logging/logging.dart';
+import "package:test_/utils/log/logger_util.dart"
 import "package:test_/modules/pdf/pdf_helper.dart";
 import "package:test_/modules/translation/translate.dart";
 import "package:test_/modules/query/query_processing.dart";
@@ -15,7 +16,8 @@ class PdfUploadScreenState extends StatefulWidget {
 }
 
 class PdfUploadScreenStateState extends State<PdfUploadScreenState> {
-  final Logger _logger = Logger("PdfUploadScreenStateState");
+  final Logger _logger = LoggerUtil.createLogger();
+
   String? filePath;
   String? fileName;
   String? extractedText;
@@ -43,10 +45,19 @@ class PdfUploadScreenStateState extends State<PdfUploadScreenState> {
         setState(() {
           extractedText = text;
         });
-        _logger.info("Extracted Text: $text");
+        _logger.i("Extracted Text: $text");
+        // if (mounted) {
+        //   Navigator.push(
+        //       context,
+        //       MaterialPageRoute(
+        //           builder: (context) => TranslationScreen(
+        //                 extractedText: text,
+        //                 fileName: fileName!,
+        //               )));
+        // }
         await translateAndUploadText(text);
       } catch (e) {
-        _logger.severe("Failed to extract content. Error $e");
+        _logger.e("Failed to extract content. Error $e");
       }
     }
   }
@@ -54,18 +65,10 @@ class PdfUploadScreenStateState extends State<PdfUploadScreenState> {
   Future<void> translateAndUploadText(String text) async {
     try {
       final translatedText = await translationService.translateText(text, 'en');
-      _logger.info("Translated Text: $translatedText");
+      _logger.i("Translated Text: $translatedText");
       final indexResponse = await queryProcessingService.uploadToPinecone(
           translatedText, fileName!);
-      // if (mounted) {
-      //   Navigator.push(
-      //     context,
-      //     MaterialPageRoute(
-      //       builder: (context) =>
-      //           ChatScreen(documentId: indexResponse.documentId),
-      //     ),
-      //   );
-      // }
+      _logger.i("Index Response: ${indexResponse.toJson()}");
       if (mounted) {
         Navigator.push(
             context,
@@ -76,7 +79,7 @@ class PdfUploadScreenStateState extends State<PdfUploadScreenState> {
                     )));
       }
     } catch (e) {
-      _logger.severe("Failed to translate and upload text");
+      _logger.e("Failed to translate and upload text $e");
     }
   }
 
@@ -85,7 +88,7 @@ class PdfUploadScreenStateState extends State<PdfUploadScreenState> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Upload File"),
-        backgroundColor: const Color.fromARGB(255, 65, 33, 243),
+        backgroundColor: const Color.fromARGB(255, 118, 98, 228),
       ),
       body: Center(
         child: Column(

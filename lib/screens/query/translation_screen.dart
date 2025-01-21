@@ -75,7 +75,7 @@ class TranslationScreenState extends State<TranslationScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Translation"),
-        backgroundColor: const Color.fromARGB(255, 41, 176, 234),
+        backgroundColor: const Color.fromARGB(255, 118, 98, 228),
         centerTitle: true,
       ),
       body: Padding(

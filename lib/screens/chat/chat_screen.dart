@@ -1,26 +1,72 @@
-// // ignore_for_file: unused_import, library_private_types_in_public_api, use_super_parameters
+// ignore_for_file: unused_import, library_private_types_in_public_api, use_super_parameters
 
-// import "package:flutter/material.dart";
-// import "package:flutter_ai_toolkit/flutter_ai_toolkit.dart";
-// import "package:logging/logging.dart";
+import "package:flutter/material.dart";
+import "package:logging/logging.dart";
 
-// import "package:test_/api/query/RAG.dart";
-// import "package:test_/widgets/loading.dart";
-// import "package:test_/screens/query/translation_screen.dart";
+import "package:test_/api/query/RAG.dart";
+import "package:test_/widgets/loading.dart";
+import "package:test_/screens/query/translation_screen.dart";
 
-// class ChatScreen extends StatefulWidget {
-//   final String documentId;
-//   final String indexName = "sem3";
+class ChatScreen extends StatefulWidget {
+  final String documentId;
+  final String indexName = "sem3";
 
-//   const ChatScreen({required this.documentId, Key? key}) : super(key: key);
+  const ChatScreen({required this.documentId, Key? key}) : super(key: key);
 
-//   @override
-//   ChatScreenState createState() => ChatScreenState();
-// }
+  @override
+  ChatScreenState createState() => ChatScreenState();
+}
 
-// class ChatScreenState extends State<ChatScreen> {
-//   final TextEditingController _controller = TextEditingController();
-//   final RAG rag = RAG();
-//   final List<String> _messages = [];
-//   final Logger _logger = Logger("Chat_Screen.dart");
-// }
+class ChatScreenState extends State<ChatScreen> {
+  final RAG rag = RAG();
+  final List<String> _messages = [];
+  // final Logger _logger = Logger("Chat_Screen.dart");
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Chat Screen"),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: _messages.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(_messages[index]),
+                );
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: "Enter a message",
+                    ),
+                    onSubmitted: (text) {
+                      setState(() {
+                        _messages.add(text);
+                      });
+                    },
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.send),
+                  onPressed: () {
+                    // Add send button functionality here
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
