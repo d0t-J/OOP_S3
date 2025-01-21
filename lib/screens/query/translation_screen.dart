@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:test_/modules/translation/translation_repository.dart';
-import 'package:test_/models/translation/translation_model.dart';
-import 'package:test_/widgets/loading.dart';
-import "package:test_/api/query/RAG.dart";
 import "package:logging/logging.dart";
+import 'package:test_/widgets/loading.dart';
+
+import 'package:test_/repository/translation/translation_repository.dart';
+import 'package:test_/models/translation/translation_model.dart';
+import "package:test_/repository/query/rag_repository.dart";
+import "package:test_/models/query/rag_model.dart";
 
 class TranslationScreen extends StatefulWidget {
   final String extractedText;
@@ -18,7 +20,8 @@ class TranslationScreen extends StatefulWidget {
 }
 
 class TranslationScreenState extends State<TranslationScreen> {
-  final TranslationRepository _repository = TranslationRepository();
+  final TranslationRepository _Translator = TranslationRepository();
+  final RAGRepository _RAG = RAGRepository();
   final Logger _logger = Logger("Translation Screen.dart");
   String _translatedText = "";
   bool _isLoading = false;
@@ -28,7 +31,7 @@ class TranslationScreenState extends State<TranslationScreen> {
     try {
       _logger.info("Extracted Text: ${widget.extractedText}");
       TranslationResult result =
-          await _repository.translate(widget.extractedText, 'en');
+          await _Translator.translate(widget.extractedText, 'en');
       setState(() => _translatedText = result.translatedText);
       _logger.info("Translated Text: $_translatedText");
 
@@ -46,20 +49,15 @@ class TranslationScreenState extends State<TranslationScreen> {
     }
   }
 
-  Future<Map<String, dynamic>> _uploadToPinecone() async {
+  Future<void> _uploadToPinecone() async {
     if (_translatedText.isEmpty) {
       _logger.warning("Translated text is empty. Skipping upload to Pinecone.");
-      return {};
     }
-
-    final RAG rag = RAG();
-
     try {
-      final Map<String, dynamic> indexResponse =
-          await rag.indexTextIntoPinecone(_translatedText, widget.fileName);
-      _logger.info("Index Upload Response: $indexResponse");
-      print("Index Upload Response: $indexResponse");
-      return indexResponse;
+      RAGModel indexResponse =
+          await _RAG.indexTextIntoPinecone(_translatedText, widget.fileName);
+      _logger.info("Index Upload Response: ${indexResponse.toJson()}");
+      print("Index Upload Response: ${indexResponse.toJson()}");
     } catch (e) {
       _logger.warning("Failed to upload to Pinecone due to error: $e");
       throw Exception("Failed to upload to Pinecone: $e");

@@ -61,7 +61,8 @@ class RAG {
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
         _logger.info('Response Body: $data');
-        return data;
+        String result = data['response'];
+        return result;
       } else {
         _logger.warning(
             "Failed to send user query. Status code: ${response.statusCode}. Response Body: ${response.body}");
