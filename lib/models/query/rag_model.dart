@@ -1,27 +1,27 @@
 class RAGModel {
-  final String documentId;
-  final String indexName;
-  final String response;
+  final String? documentId;
+  final String? indexName;
+  final String? response;
 
   RAGModel({
-    required this.documentId,
-    required this.indexName,
-    required this.response,
+    this.documentId,
+    this.indexName,
+    this.response,
   });
 
   factory RAGModel.fromJson(Map<String, dynamic> json) {
     return RAGModel(
-      documentId: json['document_id'],
-      indexName: json['index_name'],
-      response: json['response'],
+      documentId: json['document_id'] as String?,
+      indexName: json['index_name'] as String?,
+      response: json['response'] as String?,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'document_id': documentId,
-      'index_name': indexName,
-      'response': response,
+      if (documentId != null) 'document_id': documentId,
+      if (indexName != null) 'index_name': indexName,
+      if (response != null) 'response': response,
     };
   }
 }

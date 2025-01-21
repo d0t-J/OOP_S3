@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-// import 'package:logging/logging.dart';
-import "package:test_/utils/log/logger_util.dart"
+import 'package:logger/logger.dart';
+import "package:test_/utils/log/logger_util.dart";
 import "package:test_/modules/pdf/pdf_helper.dart";
 import "package:test_/modules/translation/translate.dart";
 import "package:test_/modules/query/query_processing.dart";
 import "package:test_/screens/chat/chat_screen.dart";
-
-import '../query/translation_screen.dart';
 
 class PdfUploadScreenState extends StatefulWidget {
   const PdfUploadScreenState({super.key});
@@ -45,19 +43,10 @@ class PdfUploadScreenStateState extends State<PdfUploadScreenState> {
         setState(() {
           extractedText = text;
         });
-        _logger.i("Extracted Text: $text");
-        // if (mounted) {
-        //   Navigator.push(
-        //       context,
-        //       MaterialPageRoute(
-        //           builder: (context) => TranslationScreen(
-        //                 extractedText: text,
-        //                 fileName: fileName!,
-        //               )));
-        // }
+        _logger.i("pdf_upload.dart:\nExtracted Text: $text");
         await translateAndUploadText(text);
       } catch (e) {
-        _logger.e("Failed to extract content. Error $e");
+        _logger.e("pdf_upload.dart:\nFailed to extract content. Error $e");
       }
     }
   }
@@ -65,21 +54,22 @@ class PdfUploadScreenStateState extends State<PdfUploadScreenState> {
   Future<void> translateAndUploadText(String text) async {
     try {
       final translatedText = await translationService.translateText(text, 'en');
-      _logger.i("Translated Text: $translatedText");
+      _logger.i("pdf_upload.dart:\nTranslated Text: $translatedText");
       final indexResponse = await queryProcessingService.uploadToPinecone(
           translatedText, fileName!);
-      _logger.i("Index Response: ${indexResponse.toJson()}");
+      _logger.i("pdf_upload.dart:\nIndex Response: ${indexResponse.toJson()}");
       if (mounted) {
         Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => TranslationScreen(
-                      extractedText: text,
-                      fileName: fileName!,
-                    )));
+          context,
+          MaterialPageRoute(
+            builder: (context) => ChatScreen(
+              documentId: indexResponse.documentId!,
+            ),
+          ),
+        );
       }
     } catch (e) {
-      _logger.e("Failed to translate and upload text $e");
+      _logger.e("pdf_upload.dart:\nFailed to translate and upload text $e");
     }
   }
 

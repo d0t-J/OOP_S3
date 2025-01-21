@@ -1,7 +1,8 @@
 // ignore_for_file: unused_import, library_private_types_in_public_api, use_super_parameters
 
 import "package:flutter/material.dart";
-import "package:logging/logging.dart";
+import 'package:logger/logger.dart';
+import "package:test_/utils/log/logger_util.dart";
 
 import "package:test_/api/query/RAG.dart";
 import "package:test_/widgets/loading.dart";
@@ -19,8 +20,9 @@ class ChatScreen extends StatefulWidget {
 
 class ChatScreenState extends State<ChatScreen> {
   final RAG rag = RAG();
+  final Logger _logger = LoggerUtil.createLogger();
   final List<String> _messages = [];
-  // final Logger _logger = Logger("Chat_Screen.dart");
+
 
   @override
   Widget build(BuildContext context) {
