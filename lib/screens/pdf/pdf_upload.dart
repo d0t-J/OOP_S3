@@ -1,19 +1,10 @@
-//! https://stackoverflow.com/questions/66685607/how-to-upload-files-pdf-doc-image-from-file-picker-to-api-server-on-flutter
-//!https://stackoverflow.com/questions/49233934/how-to-open-and-pdf-or-word-document-in-the-flutter
-//! https://stackoverflow.com/questions/76238373/how-to-view-pdf-in-flutter
-//! StackOverflow.com
-//! Reference for Uploading Files to API server on Flutter
-
-//! https://pub.dev/packages/pdf_viewer_plugin
-//! Reference for PDF Viewer Plugin
-
-//! https://help.syncfusion.com/flutter/pdf-viewer/text-selection
-//! Reference for Text Selection in PDF Viewer through Syncfusion PDF Viewer
-
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
-import '../../modules/pdf/readPDF.dart';
+import "package:test_/modules/pdf/pdf_helper.dart";
+import "package:test_/modules/translation/translate.dart";
+import "package:test_/modules/query/query_processing.dart";
+import "package:test_/screens/chat/chat_screen.dart";
+
 import '../query/translation_screen.dart';
 
 class PdfUploadScreenState extends StatefulWidget {
@@ -24,21 +15,22 @@ class PdfUploadScreenState extends StatefulWidget {
 }
 
 class PdfUploadScreenStateState extends State<PdfUploadScreenState> {
+  final Logger _logger = Logger("PdfUploadScreenStateState");
   String? filePath;
   String? fileName;
   String? extractedText;
   final PdfService pdfService = PdfService();
-  final Logger _logger = Logger("PdfUploadScreenStateState");
+  final TranslationService translationService = TranslationService();
+  final QueryProcessingService queryProcessingService =
+      QueryProcessingService();
 
   Future<void> pickFile() async {
-    final result = await FilePicker.platform
-        .pickFiles(type: FileType.custom, allowedExtensions: ['pdf']);
+    final result = await pdfService.pickPDF();
     if (result != null) {
       setState(() {
         filePath = result.files.single.path;
-        fileName = getFileName(filePath!);
+        fileName = pdfService.getFileName(filePath!);
         extractedText = null;
-        // Fix: Add bytes property for PDF file ( web issue )
       });
       await extractPdfContent();
     }
@@ -52,23 +44,40 @@ class PdfUploadScreenStateState extends State<PdfUploadScreenState> {
           extractedText = text;
         });
         _logger.info("Extracted Text: $text");
-        if (mounted) {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => TranslationScreen(
-                        extractedText: text,
-                        fileName: fileName!,
-                      )));
-        }
+        await translateAndUploadText(text);
       } catch (e) {
         _logger.severe("Failed to extract content. Error $e");
       }
     }
   }
 
-  String getFileName(String filePath) {
-    return filePath.split('/').last;
+  Future<void> translateAndUploadText(String text) async {
+    try {
+      final translatedText = await translationService.translateText(text, 'en');
+      _logger.info("Translated Text: $translatedText");
+      final indexResponse = await queryProcessingService.uploadToPinecone(
+          translatedText, fileName!);
+      // if (mounted) {
+      //   Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //       builder: (context) =>
+      //           ChatScreen(documentId: indexResponse.documentId),
+      //     ),
+      //   );
+      // }
+      if (mounted) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => TranslationScreen(
+                      extractedText: text,
+                      fileName: fileName!,
+                    )));
+      }
+    } catch (e) {
+      _logger.severe("Failed to translate and upload text");
+    }
   }
 
   @override
@@ -76,7 +85,7 @@ class PdfUploadScreenStateState extends State<PdfUploadScreenState> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Upload File"),
-        backgroundColor: Colors.blue,
+        backgroundColor: const Color.fromARGB(255, 65, 33, 243),
       ),
       body: Center(
         child: Column(
@@ -89,7 +98,7 @@ class PdfUploadScreenStateState extends State<PdfUploadScreenState> {
             if (filePath != null)
               Padding(
                 padding: const EdgeInsets.all(3.0),
-                child: Text("Selected File: ${getFileName(filePath!)}"),
+                child: Text("Selected File: $fileName"),
               ),
           ],
         ),
