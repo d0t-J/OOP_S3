@@ -43,7 +43,8 @@ class RAG {
     }
   }
 
-  sendUserQuery(String query, String file_name) async {
+  Future<Map<String, dynamic>> sendUserQuery(
+      String query, String file_name) async {
     _logger.i("RAG.dart\nsendUserQuery()");
     final url = Uri.parse(ragPoint);
     final Headers = {
@@ -52,18 +53,17 @@ class RAG {
     final Body = jsonEncode({"query": query, "namespace": file_name});
 
     //? Debug: Log the request details
-    _logger.i(
-        'Request:\nURL: $url\nHeaders: $Headers\nRequest Body: $Body');
+    _logger.i('Request:\nURL: $url\nHeaders: $Headers\nRequest Body: $Body');
     try {
       final response = await http.post(url, headers: Headers, body: Body);
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
-        _logger.i('RAG.dart:\nResponse Body: $data');
-        String result = data['response'];
-        return result;
+        _logger.i('\nResponse:\n $data');
+        return data;
       } else {
-        _logger.e("Failed to send user query. Status code: ${response.statusCode}. Response Body: ${response.body}");
+        _logger.e(
+            "Failed to send user query. Status code: ${response.statusCode}. Response Body: ${response.body}");
         throw Exception(
             "Failed to send user query. Error Code: ${response.statusCode}");
       }

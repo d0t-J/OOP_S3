@@ -79,7 +79,8 @@ class PdfUploadScreenStateState extends State<PdfUploadScreenState> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Upload File"),
+        title: Text("Upload File",
+            style: TextStyle(fontSize: 20, color: Colors.white)),
         backgroundColor: const Color.fromARGB(255, 118, 98, 228),
       ),
       backgroundColor: const Color.fromARGB(255, 227, 223, 249),

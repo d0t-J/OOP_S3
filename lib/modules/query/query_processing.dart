@@ -25,4 +25,21 @@ class QueryProcessingService {
       rethrow;
     }
   }
+
+  Future<String> sendUserMessage(String query, String filename) async {
+    if (query.isEmpty) {
+      _logger.e("query_processing.dart:\nQuery is empty. Message not sent.");
+      throw Exception("Query is empty");
+    }
+
+    try {
+      RAGModel messageResponse = await _rag.sendUserQuery(query, filename);
+      _logger.i(
+          "query_processing.dart:\nMessage Response: ${messageResponse.toJson()}");
+      return messageResponse.response ?? "No response from server";
+    } catch (e) {
+      _logger.e("query_processing.dart:\nFailed to send user message $e");
+      rethrow;
+    }
+  }
 }

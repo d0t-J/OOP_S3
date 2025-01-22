@@ -20,10 +20,10 @@ class BreathingButtonState extends State<BreathingButton>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(seconds: 1),
+      duration: const Duration(seconds: 2),
       vsync: this,
     )..repeat(reverse: true);
-    _animation = Tween<double>(begin: 1.0, end: 2.0).animate(CurvedAnimation(
+    _animation = Tween<double>(begin: 1.0, end: 1.15).animate(CurvedAnimation(
       parent: _controller,
       curve: Curves.easeInOut,
     ));
