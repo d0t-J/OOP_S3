@@ -11,8 +11,10 @@ import "package:test_/screens/query/translation_screen.dart";
 class ChatScreen extends StatefulWidget {
   final String documentId;
   final String indexName = "sem3";
+  final String fileName;
 
-  const ChatScreen({required this.documentId, Key? key}) : super(key: key);
+  const ChatScreen({required this.documentId, required this.fileName, Key? key})
+      : super(key: key);
 
   @override
   ChatScreenState createState() => ChatScreenState();
@@ -23,12 +25,11 @@ class ChatScreenState extends State<ChatScreen> {
   final Logger _logger = LoggerUtil.createLogger();
   final List<String> _messages = [];
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Chat Screen"),
+        title: Text("Chat with ${widget.fileName}"),
       ),
       body: Column(
         children: [

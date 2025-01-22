@@ -5,6 +5,7 @@ import "package:test_/modules/pdf/pdf_helper.dart";
 import "package:test_/modules/translation/translate.dart";
 import "package:test_/modules/query/query_processing.dart";
 import "package:test_/screens/chat/chat_screen.dart";
+import "package:test_/widgets/breathing_button.dart";
 
 class PdfUploadScreenState extends StatefulWidget {
   const PdfUploadScreenState({super.key});
@@ -64,6 +65,7 @@ class PdfUploadScreenStateState extends State<PdfUploadScreenState> {
           MaterialPageRoute(
             builder: (context) => ChatScreen(
               documentId: indexResponse.documentId!,
+              fileName: fileName!,
             ),
           ),
         );
@@ -80,13 +82,19 @@ class PdfUploadScreenStateState extends State<PdfUploadScreenState> {
         title: Text("Upload File"),
         backgroundColor: const Color.fromARGB(255, 118, 98, 228),
       ),
+      backgroundColor: const Color.fromARGB(255, 227, 223, 249),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(
+            Text(
+              'Upload a PDF file to start a chat',
+              style: TextStyle(fontSize: 20),
+            ),
+            Padding(padding: const EdgeInsets.all(3.0)),
+            BreathingButton(
               onPressed: pickFile,
-              child: Text("PDF"),
+              text: "PDF",
             ),
             if (filePath != null)
               Padding(
