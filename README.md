@@ -68,22 +68,17 @@ OOP_S3/
 
 ### Run the App
 
-1. **Choosing Device**
-        <li>Connect to a Physical Device</li>
-        <li>Connect to a Virtual Emulator</li>
-
-2. **Run the App ( default mode )**
+1. **Run the App ( default mode )**
 
     ```
     flutter run
     ```
 
-    Additional Flags:<br>
-    $$
-    `--debug` for debug mode
-    `--profile` for performance profiling mode
+    **Additional Flags**:<br>
+
+    `--debug` for debug mode,
+    `--profile` for performance profiling mode,
     `--release` for release mode
-    $$
 
 ## Anomalies in the build
 
