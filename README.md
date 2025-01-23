@@ -78,10 +78,12 @@ OOP_S3/
     flutter run
     ```
 
-    Additional Flags:
+    Additional Flags:<br>
+    $$
     `--debug` for debug mode
     `--profile` for performance profiling mode
     `--release` for release mode
+    $$
 
 ## Anomalies in the build
 
