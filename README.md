@@ -69,8 +69,8 @@ OOP_S3/
 ### Run the App
 
 1. **Choosing Device**
- <li>Connect to a Physical Device</li>
- <li>Connect to a Virtual Emulator</li>
+    <li>Connect to a Physical Device</li>
+    <li>Connect to a Virtual Emulator</li>
 
 2. **Run the App ( default mode )**
 
