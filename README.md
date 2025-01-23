@@ -55,35 +55,33 @@ OOP_S3/
 
 2. **Install Dependencies**
 
-```
-flutter pub get
-```
+    ```
+    flutter pub get
+    ```
 
 3. **Add `.env` file for Environment Variables at the root of your project**
 
-```
-AZURE_TRANSLATOR_KEY=<your-azure-key>
-AZURE_TRANSLATOR_REGION=<your-region>
-```
+    ```
+    AZURE_TRANSLATOR_KEY=<your-azure-key>
+    AZURE_TRANSLATOR_REGION=<your-region>
+    ```
 
 ### Run the App
 
 1. **Choosing Device**
- <li>i. Connect to a Physical Device</li>
- <li>ii. Connect to a Virtual Emulator</li>
+ <li>Connect to a Physical Device</li>
+ <li>Connect to a Virtual Emulator</li>
 
 2. **Run the App ( default mode )**
 
-```
-flutter run
-```
+    ```
+    flutter run
+    ```
 
-Additional Flags:
-`--debug` for debug mode
-`--profile` for performance profiling mode
-`--release` for release mode
-
-
+    Additional Flags:
+    `--debug` for debug mode
+    `--profile` for performance profiling mode
+    `--release` for release mode
 
 ## Anomalies in the build
 
