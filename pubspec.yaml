@@ -34,6 +34,7 @@ dependencies:
     http: ^1.2.2
     logger: ^2.5.0
     syncfusion_flutter_pdf: ^28.1.33
+    jumping_dot: ^0.0.7
 
     # The following adds the Cupertino Icons font to your application.
     # Use with the CupertinoIcons class for iOS style icons.
