@@ -36,10 +36,10 @@ OOP_S3/
 │   ├── utils/              # Utility functions
 │   └── widgets/            # Custom widgets
 ├── test/                   # Unit tests
-├── pubspec.yaml            # Project configuration
 ├── README.md               # Project documentation
-├── analysis_options.yaml
+├── pubspec.yaml            # Project configuration
 ├── pubspec.lock
+├── analysis_options.yaml
 └── .metadata
 ```
 
