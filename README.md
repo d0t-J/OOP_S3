@@ -1,17 +1,9 @@
 # [OOP S3](https://gitingest.com/d0t-J/OOP_S3)
+**This Project uses RAG script coded primarily for it: [RAG-S3](https://github.com/d0t-J/Rag-S3)**
 
 ## Overview
 
 OOP S3 is a Flutter application designed to process and interact with PDF documents. The application allows users to upload PDF files, extract text, translate the text, and interact with the content through a chat interface. The backend services are integrated with Pinecone for indexing and querying the text data.
-
-## Features
-
--   **PDF Upload**: Users can upload PDF files.
--   **Text Extraction**: Extract text content from the uploaded PDF.
--   **Translation**: Translate the extracted text to English.
--   **Indexing**: Index the translated text into Pinecone.
--   **Chat Interface**: Interact with the indexed content through a chat interface.
--   **Real-time Streaming**: Stream bot responses in real-time.
 
 ## Data Flow between major components
 
