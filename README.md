@@ -23,6 +23,10 @@ OOP S3 is a Flutter application designed to process and interact with PDF docume
 OOP_S3/
 ├── android/                # Android-specific files
 ├── ios/                    # iOS-specific files
+├── web/                    # Web-specific files
+├── windows/                # Windows-specific files
+├── linux/                  # Linux-specific files
+├── macos/                  # MacOS-specific files
 ├── lib/                    # Main source code
 │   ├── api/                # API interaction code
 │   ├── models/             # Data models
@@ -33,7 +37,10 @@ OOP_S3/
 │   └── widgets/            # Custom widgets
 ├── test/                   # Unit tests
 ├── pubspec.yaml            # Project configuration
-└── README.md               # Project documentation
+├── README.md               # Project documentation
+├── analysis_options.yaml
+├── pubspec.lock
+└── .metadata
 ```
 
 ## Getting Started
