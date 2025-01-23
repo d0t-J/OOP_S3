@@ -144,7 +144,7 @@ class ChatScreenState extends State<ChatScreen> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 12.0, vertical: 12.0),
+                        horizontal: 1.0, vertical: 15.0),
                   ),
                   onPressed: !_isLoading
                       ? () {
