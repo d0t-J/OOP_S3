@@ -1,8 +1,10 @@
 // ignore_for_file: unused_import, library_private_types_in_public_api, use_super_parameters
 
 import "package:flutter/material.dart";
+import 'package:flutter/rendering.dart';
 import 'package:logger/logger.dart';
 import "package:jumping_dot/jumping_dot.dart";
+import "package:flutter_markdown/flutter_markdown.dart";
 
 import "package:test_/widgets/loading.dart";
 import "package:test_/repository/query/rag_repository.dart";
@@ -28,19 +30,36 @@ class ChatScreen extends StatefulWidget {
 }
 
 class ChatScreenState extends State<ChatScreen> {
+  bool _isLoading = false;
+  bool _isUserScrolling = false;
   final Logger _logger = LoggerUtil.createLogger();
   final QueryProcessingService queryProcessingService =
       QueryProcessingService();
-
-  bool _isLoading = false; // Local flag to track ongoing messages
   final TextEditingController _controller = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+
   final List<Map<String, String>> _messages = [];
 
   @override
   void initState() {
     super.initState();
-    // Start with the `isLoading` state passed from the PdfUploadScreen
     _isLoading = widget.isLoading;
+    _scrollController.addListener(() {
+      if (_scrollController.position.userScrollDirection !=
+          ScrollDirection.idle) {
+        _isUserScrolling = true;
+      } else {
+        _isUserScrolling = false;
+      }
+    });
+  }
+
+  void _scrollToBottom() {
+    if (_scrollController.hasClients) {
+      _scrollController.jumpTo(
+        _scrollController.position.maxScrollExtent,
+      );
+    }
   }
 
   Future<void> _sendMessage(String query) async {
@@ -51,6 +70,10 @@ class ChatScreenState extends State<ChatScreen> {
       _isLoading = true;
     });
 
+    if (!_isUserScrolling) {
+      _scrollToBottom();
+    }
+
     try {
       String response =
           await queryProcessingService.sendUserMessage(query, widget.fileName);
@@ -60,8 +83,11 @@ class ChatScreenState extends State<ChatScreen> {
             if (i == 0) _messages.add({'bot': ''});
             _messages.last['bot'] = response.substring(0, i);
           });
+          if (!_isUserScrolling) {
+            _scrollToBottom();
+          }
         }
-        await Future.delayed(const Duration(milliseconds: 20));
+        await Future.delayed(const Duration(milliseconds: 15));
       }
     } catch (e) {
       _logger.e("chat_screen.dart:\nFailed to send message: $e");
@@ -69,6 +95,9 @@ class ChatScreenState extends State<ChatScreen> {
         setState(() {
           _messages.add({'bot': "Unable to fetch response."});
         });
+        if (!_isUserScrolling) {
+          _scrollToBottom();
+        }
       }
     } finally {
       if (mounted) {
@@ -82,6 +111,7 @@ class ChatScreenState extends State<ChatScreen> {
   @override
   void dispose() {
     _controller.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -98,42 +128,52 @@ class ChatScreenState extends State<ChatScreen> {
       backgroundColor: const Color.fromARGB(255, 227, 223, 249),
       body: Column(
         children: [
-          // Show loading indicator if the file is still being indexed
           if (widget.isLoading)
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: LinearProgressIndicator(
-                backgroundColor: Colors.grey[300],
+                backgroundColor: const Color.fromARGB(255, 227, 223, 249),
                 color: const Color.fromARGB(255, 103, 89, 186),
               ),
             ),
           if (!widget.isLoading) ...[
-            // Chat messages are displayed when indexing is complete
             Expanded(
-              child: ListView.builder(
-                itemCount: _messages.length,
-                itemBuilder: (context, index) {
-                  final message = _messages[index];
-                  final isUser = message.containsKey("user");
-                  return Container(
-                    alignment:
-                        isUser ? Alignment.centerRight : Alignment.centerLeft,
-                    margin:
-                        const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: isUser
-                          ? Color.fromARGB(255, 168, 159, 221)
-                          : Color.fromARGB(255, 103, 89, 186),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Text(
-                      isUser ? message['user']! : message['bot']!,
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                  );
-                },
-              ),
+              child: LayoutBuilder(builder: (context, constraints) {
+                return ListView.builder(
+                  controller: _scrollController,
+                  physics: const ClampingScrollPhysics(),
+                  itemCount: _messages.length,
+                  itemBuilder: (context, index) {
+                    final message = _messages[index];
+                    final isUser = message.containsKey("user");
+                    return Container(
+                        alignment: isUser
+                            ? Alignment.centerRight
+                            : Alignment.centerLeft,
+                        margin: const EdgeInsets.symmetric(
+                            vertical: 5, horizontal: 10),
+                        padding: const EdgeInsets.all(15),
+                        decoration: BoxDecoration(
+                          color: isUser
+                              ? Color.fromARGB(255, 168, 159, 221)
+                              : Color.fromARGB(255, 103, 89, 186),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: isUser
+                            ? Text(message['user']!,
+                                style: const TextStyle(fontSize: 18))
+                            : MarkdownBody(
+                                data: message['bot']!,
+                                styleSheet: MarkdownStyleSheet(
+                                  p: const TextStyle(
+                                      fontSize: 16,
+                                      color:
+                                          Color.fromARGB(255, 255, 255, 255)),
+                                ),
+                              ));
+                  },
+                );
+              }),
             ),
             if (_isLoading)
               Padding(
