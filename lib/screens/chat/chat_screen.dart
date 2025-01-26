@@ -1,18 +1,12 @@
-// ignore_for_file: unused_import, library_private_types_in_public_api, use_super_parameters
-
 import "package:flutter/material.dart";
 import 'package:flutter/rendering.dart';
 import 'package:logger/logger.dart';
 import "package:jumping_dot/jumping_dot.dart";
 import "package:flutter_markdown/flutter_markdown.dart";
-import 'package:chat_bubbles/chat_bubbles.dart';
 
 import "package:test_/widgets/bubble_two.dart";
-import "package:test_/widgets/loading.dart";
-import "package:test_/repository/query/rag_repository.dart";
 import "package:test_/modules/query/query_processing.dart";
 import "package:test_/utils/log/logger_util.dart";
-import "package:test_/screens/query/translation_screen.dart";
 
 class ChatScreen extends StatefulWidget {
   final String indexName = "sem3";
@@ -24,8 +18,7 @@ class ChatScreen extends StatefulWidget {
       {required this.documentId,
       required this.fileName,
       this.isLoading = false,
-      Key? key})
-      : super(key: key);
+      super.key});
 
   @override
   ChatScreenState createState() => ChatScreenState();
@@ -165,7 +158,7 @@ class ChatScreenState extends State<ChatScreen> {
                             : CustomBubbleSpecialOne(
                                 color: const Color.fromARGB(255, 103, 89, 186),
                                 isSender: false,
-                                text: "", // Placeholder text
+                                text: "",
                                 textStyle: const TextStyle(
                                     fontSize: 16, color: Colors.white),
                                 customChild: MarkdownBody(
