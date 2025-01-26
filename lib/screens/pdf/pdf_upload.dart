@@ -6,7 +6,7 @@ import "package:test_/modules/translation/translate.dart";
 import "package:test_/modules/query/query_processing.dart";
 import "package:test_/screens/chat/chat_screen.dart";
 import "package:test_/widgets/breathing_button.dart";
-
+ 
 class PdfUploadScreenState extends StatefulWidget {
   const PdfUploadScreenState({super.key});
 
@@ -24,6 +24,7 @@ class PdfUploadScreenStateState extends State<PdfUploadScreenState> {
   final TranslationService translationService = TranslationService();
   final QueryProcessingService queryProcessingService =
       QueryProcessingService();
+  bool isLoading = false;
 
   Future<void> pickFile() async {
     final result = await pdfService.pickPDF();
@@ -33,6 +34,18 @@ class PdfUploadScreenStateState extends State<PdfUploadScreenState> {
         fileName = pdfService.getFileName(filePath!);
         extractedText = null;
       });
+      if (mounted) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ChatScreen(
+              documentId: null,
+              fileName: fileName!,
+              isLoading: true,
+            ),
+          ),
+        );
+      }
       await extractPdfContent();
     }
   }
@@ -59,17 +72,16 @@ class PdfUploadScreenStateState extends State<PdfUploadScreenState> {
       final indexResponse = await queryProcessingService.uploadToPinecone(
           translatedText, fileName!);
       _logger.i("pdf_upload.dart:\nIndex Response: ${indexResponse.toJson()}");
-      if (mounted) {
-        Navigator.push(
+
+      Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => ChatScreen(
               documentId: indexResponse.documentId!,
               fileName: fileName!,
+              isLoading: false,
             ),
-          ),
-        );
-      }
+          ));
     } catch (e) {
       _logger.e("pdf_upload.dart:\nFailed to translate and upload text $e");
     }

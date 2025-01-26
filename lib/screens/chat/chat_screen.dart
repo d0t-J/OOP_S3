@@ -1,8 +1,10 @@
 // ignore_for_file: unused_import, library_private_types_in_public_api, use_super_parameters
 
 import "package:flutter/material.dart";
+import 'package:flutter/rendering.dart';
 import 'package:logger/logger.dart';
 import "package:jumping_dot/jumping_dot.dart";
+import "package:flutter_markdown/flutter_markdown.dart";
 
 import "package:test_/widgets/loading.dart";
 import "package:test_/repository/query/rag_repository.dart";
@@ -11,11 +13,16 @@ import "package:test_/utils/log/logger_util.dart";
 import "package:test_/screens/query/translation_screen.dart";
 
 class ChatScreen extends StatefulWidget {
-  final String documentId;
   final String indexName = "sem3";
+  final String? documentId;
   final String fileName;
+  final bool isLoading;
 
-  const ChatScreen({required this.documentId, required this.fileName, Key? key})
+  const ChatScreen(
+      {required this.documentId,
+      required this.fileName,
+      this.isLoading = false,
+      Key? key})
       : super(key: key);
 
   @override
@@ -23,16 +30,38 @@ class ChatScreen extends StatefulWidget {
 }
 
 class ChatScreenState extends State<ChatScreen> {
-  final Logger _logger = LoggerUtil.createLogger();
-  // ignore: unused_field
   bool _isLoading = false;
-  final TextEditingController _controller = TextEditingController();
-
+  bool _isUserScrolling = false;
+  final Logger _logger = LoggerUtil.createLogger();
   final QueryProcessingService queryProcessingService =
       QueryProcessingService();
+  final TextEditingController _controller = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+
   final List<Map<String, String>> _messages = [];
 
-  // ignore: unused_element
+  @override
+  void initState() {
+    super.initState();
+    _isLoading = widget.isLoading;
+    _scrollController.addListener(() {
+      if (_scrollController.position.userScrollDirection !=
+          ScrollDirection.idle) {
+        _isUserScrolling = true;
+      } else {
+        _isUserScrolling = false;
+      }
+    });
+  }
+
+  void _scrollToBottom() {
+    if (_scrollController.hasClients) {
+      _scrollController.jumpTo(
+        _scrollController.position.maxScrollExtent,
+      );
+    }
+  }
+
   Future<void> _sendMessage(String query) async {
     if (query.isEmpty || _isLoading) return;
 
@@ -40,6 +69,10 @@ class ChatScreenState extends State<ChatScreen> {
       _messages.add({'user': query});
       _isLoading = true;
     });
+
+    if (!_isUserScrolling) {
+      _scrollToBottom();
+    }
 
     try {
       String response =
@@ -50,8 +83,11 @@ class ChatScreenState extends State<ChatScreen> {
             if (i == 0) _messages.add({'bot': ''});
             _messages.last['bot'] = response.substring(0, i);
           });
+          if (!_isUserScrolling) {
+            _scrollToBottom();
+          }
         }
-        await Future.delayed(const Duration(milliseconds: 20));
+        await Future.delayed(const Duration(milliseconds: 15));
       }
     } catch (e) {
       _logger.e("chat_screen.dart:\nFailed to send message: $e");
@@ -59,6 +95,9 @@ class ChatScreenState extends State<ChatScreen> {
         setState(() {
           _messages.add({'bot': "Unable to fetch response."});
         });
+        if (!_isUserScrolling) {
+          _scrollToBottom();
+        }
       }
     } finally {
       if (mounted) {
@@ -72,6 +111,7 @@ class ChatScreenState extends State<ChatScreen> {
   @override
   void dispose() {
     _controller.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -79,87 +119,120 @@ class ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.fileName,
-            style: TextStyle(fontSize: 20, color: Colors.white)),
+        title: Text(
+          widget.fileName,
+          style: TextStyle(fontSize: 20, color: Colors.white),
+        ),
         backgroundColor: const Color.fromARGB(255, 118, 98, 228),
       ),
       backgroundColor: const Color.fromARGB(255, 227, 223, 249),
       body: Column(
         children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: _messages.length,
-              itemBuilder: (context, index) {
-                final message = _messages[index];
-                final isUser = message.containsKey("user");
-                return Container(
-                  alignment:
-                      isUser ? Alignment.centerRight : Alignment.centerLeft,
-                  margin:
-                      const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: isUser
-                        ? Color.fromARGB(255, 168, 159, 221)
-                        : Color.fromARGB(255, 103, 89, 186),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Text(
-                    isUser ? message['user']! : message['bot']!,
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                );
-              },
-            ),
-          ),
-          if (_isLoading)
+          if (widget.isLoading)
             Padding(
-              padding: EdgeInsets.symmetric(vertical: 10),
-              child: JumpingDots(
-                color: Color.fromARGB(255, 103, 89, 186),
-                numberOfDots: 3,
-                animationDuration: Duration(milliseconds: 300),
+              padding: const EdgeInsets.all(16.0),
+              child: LinearProgressIndicator(
+                backgroundColor: const Color.fromARGB(255, 227, 223, 249),
+                color: const Color.fromARGB(255, 103, 89, 186),
               ),
             ),
-          Padding(
-            padding:
-                const EdgeInsets.only(left: 12.0, right: 12.0, bottom: 12.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _controller,
-                    enabled: !_isLoading,
-                    decoration: const InputDecoration(
-                      hintText: "Enter message...",
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    elevation: 5,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 1.0, vertical: 15.0),
-                  ),
-                  onPressed: !_isLoading
-                      ? () {
-                          final query = _controller.text.trim();
-                          if (query.isNotEmpty) {
-                            _sendMessage(query);
-                            _controller.clear();
-                          }
-                        }
-                      : null,
-                  child: const Icon(Icons.send),
-                ),
-              ],
+          if (!widget.isLoading) ...[
+            Expanded(
+              child: LayoutBuilder(builder: (context, constraints) {
+                return ListView.builder(
+                  controller: _scrollController,
+                  physics: const ClampingScrollPhysics(),
+                  itemCount: _messages.length,
+                  itemBuilder: (context, index) {
+                    final message = _messages[index];
+                    final isUser = message.containsKey("user");
+                    return Container(
+                        alignment: isUser
+                            ? Alignment.centerRight
+                            : Alignment.centerLeft,
+                        margin: const EdgeInsets.symmetric(
+                            vertical: 5, horizontal: 10),
+                        padding: const EdgeInsets.all(15),
+                        decoration: BoxDecoration(
+                          color: isUser
+                              ? Color.fromARGB(255, 168, 159, 221)
+                              : Color.fromARGB(255, 103, 89, 186),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: isUser
+                            ? Text(message['user']!,
+                                style: const TextStyle(fontSize: 18))
+                            : MarkdownBody(
+                                data: message['bot']!,
+                                styleSheet: MarkdownStyleSheet(
+                                  p: const TextStyle(
+                                      fontSize: 16,
+                                      color:
+                                          Color.fromARGB(255, 255, 255, 255)),
+                                ),
+                              ));
+                  },
+                );
+              }),
             ),
-          ),
+            if (_isLoading)
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 10),
+                child: JumpingDots(
+                  color: Color.fromARGB(255, 103, 89, 186),
+                  numberOfDots: 3,
+                  animationDuration: Duration(milliseconds: 300),
+                ),
+              ),
+            Padding(
+              padding:
+                  const EdgeInsets.only(left: 12.0, right: 12.0, bottom: 12.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _controller,
+                      enabled: !_isLoading,
+                      decoration: const InputDecoration(
+                        hintText: "Enter message...",
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      elevation: 5,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 1.0, vertical: 15.0),
+                    ),
+                    onPressed: !_isLoading
+                        ? () {
+                            final query = _controller.text.trim();
+                            if (query.isNotEmpty) {
+                              _sendMessage(query);
+                              _controller.clear();
+                            }
+                          }
+                        : null,
+                    child: const Icon(Icons.send),
+                  ),
+                ],
+              ),
+            ),
+          ],
+          if (widget.isLoading)
+            Expanded(
+              child: Center(
+                child: Text(
+                  "Processing your file...",
+                  style: TextStyle(fontSize: 18, color: Colors.grey[700]),
+                ),
+              ),
+            ),
         ],
       ),
     );
