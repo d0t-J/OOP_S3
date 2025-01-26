@@ -6,7 +6,7 @@ import "package:test_/modules/translation/translate.dart";
 import "package:test_/modules/query/query_processing.dart";
 import "package:test_/screens/chat/chat_screen.dart";
 import "package:test_/widgets/breathing_button.dart";
- 
+
 class PdfUploadScreenState extends StatefulWidget {
   const PdfUploadScreenState({super.key});
 

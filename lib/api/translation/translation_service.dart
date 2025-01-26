@@ -16,7 +16,6 @@ class TranslationService {
   final Logger _logger = LoggerUtil.createLogger();
 
   Future<String> translateText(String text, String targetLanguage) async {
-    
     _logger.i("translation_service.dart\ntranslateText()");
 
     final url = Uri.parse('$endpoint&to=$targetLanguage&textType=plain');
