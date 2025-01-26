@@ -13,8 +13,7 @@ class TranslationScreen extends StatefulWidget {
   final String fileName;
 
   const TranslationScreen(
-      {required this.extractedText, required this.fileName, Key? key})
-      : super(key: key);
+      {required this.extractedText, required this.fileName, super.key});
 
   @override
   TranslationScreenState createState() => TranslationScreenState();
