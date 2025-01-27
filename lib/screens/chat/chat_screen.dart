@@ -1,16 +1,12 @@
-// ignore_for_file: unused_import, library_private_types_in_public_api, use_super_parameters
-
 import "package:flutter/material.dart";
 import 'package:flutter/rendering.dart';
 import 'package:logger/logger.dart';
 import "package:jumping_dot/jumping_dot.dart";
 import "package:flutter_markdown/flutter_markdown.dart";
 
-import "package:test_/widgets/loading.dart";
-import "package:test_/repository/query/rag_repository.dart";
+import "package:test_/widgets/bubble_two.dart";
 import "package:test_/modules/query/query_processing.dart";
 import "package:test_/utils/log/logger_util.dart";
-import "package:test_/screens/query/translation_screen.dart";
 
 class ChatScreen extends StatefulWidget {
   final String indexName = "sem3";
@@ -22,8 +18,7 @@ class ChatScreen extends StatefulWidget {
       {required this.documentId,
       required this.fileName,
       this.isLoading = false,
-      Key? key})
-      : super(key: key);
+      super.key});
 
   @override
   ChatScreenState createState() => ChatScreenState();
@@ -146,31 +141,38 @@ class ChatScreenState extends State<ChatScreen> {
                   itemBuilder: (context, index) {
                     final message = _messages[index];
                     final isUser = message.containsKey("user");
-                    return Container(
-                        alignment: isUser
-                            ? Alignment.centerRight
-                            : Alignment.centerLeft,
-                        margin: const EdgeInsets.symmetric(
+                    return Align(
+                      alignment:
+                          isUser ? Alignment.centerRight : Alignment.centerLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
                             vertical: 5, horizontal: 10),
-                        padding: const EdgeInsets.all(15),
-                        decoration: BoxDecoration(
-                          color: isUser
-                              ? Color.fromARGB(255, 168, 159, 221)
-                              : Color.fromARGB(255, 103, 89, 186),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
                         child: isUser
-                            ? Text(message['user']!,
-                                style: const TextStyle(fontSize: 18))
-                            : MarkdownBody(
-                                data: message['bot']!,
-                                styleSheet: MarkdownStyleSheet(
-                                  p: const TextStyle(
+                            ? CustomBubbleSpecialOne(
+                                text: message['user']!,
+                                color: const Color.fromARGB(255, 168, 159, 221),
+                                isSender: true,
+                                textStyle: const TextStyle(
+                                    fontSize: 16, color: Colors.white),
+                              )
+                            : CustomBubbleSpecialOne(
+                                color: const Color.fromARGB(255, 103, 89, 186),
+                                isSender: false,
+                                text: "",
+                                textStyle: const TextStyle(
+                                    fontSize: 16, color: Colors.white),
+                                customChild: MarkdownBody(
+                                  data: message['bot']!,
+                                  styleSheet: MarkdownStyleSheet(
+                                    p: const TextStyle(
                                       fontSize: 16,
-                                      color:
-                                          Color.fromARGB(255, 255, 255, 255)),
+                                      color: Colors.white,
+                                    ),
+                                  ),
                                 ),
-                              ));
+                              ),
+                      ),
+                    );
                   },
                 );
               }),

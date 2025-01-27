@@ -5,7 +5,8 @@ import 'package:test_/models/translation/translation_model.dart';
 class TranslationRepository {
   final TranslationService _service = TranslationService();
 
-  Future<TranslationResult> translate(String text, String targetLanguage) async {
+  Future<TranslationResult> translate(
+      String text, String targetLanguage) async {
     String translatedText = await _service.translateText(text, targetLanguage);
     return TranslationResult(
         originalText: text, translatedText: translatedText);

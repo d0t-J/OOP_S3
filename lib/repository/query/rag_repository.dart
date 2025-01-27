@@ -1,7 +1,7 @@
 import 'package:logger/logger.dart';
 import "package:test_/utils/log/logger_util.dart";
 import "package:test_/models/query/rag_model.dart";
-import "package:test_/api/query/RAG.dart";
+import "package:test_/api/query/rag.dart";
 
 class RAGRepository {
   final RAG rag = RAG();

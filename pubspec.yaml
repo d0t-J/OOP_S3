@@ -36,12 +36,13 @@ dependencies:
     syncfusion_flutter_pdf: ^28.1.33
     jumping_dot: ^0.0.7
     flutter_markdown: ^0.7.5
+    chat_bubbles: ^1.6.0
 
     # The following adds the Cupertino Icons font to your application.
     # Use with the CupertinoIcons class for iOS style icons.
     cupertino_icons: ^1.0.8
     flutter_dotenv: ^5.2.1
-    
+
 dev_dependencies:
     flutter_test:
         sdk: flutter

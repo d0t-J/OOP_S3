@@ -10,18 +10,18 @@
             "request": "attach"
         },
         {
-            "name": "oop_s3",
+            "name": "test_",
             "request": "launch",
             "type": "dart"
         },
         {
-            "name": "oop_s3 (profile mode)",
+            "name": "test_ (profile mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"
         },
         {
-            "name": "oop_s3 (release mode)",
+            "name": "test_ (release mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"
