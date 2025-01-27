@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
+
 import "package:test_/utils/log/logger_util.dart";
 import "package:test_/modules/pdf/pdf_helper.dart";
 import "package:test_/modules/translation/translate.dart";
@@ -67,7 +68,11 @@ class PdfUploadScreenStateState extends State<PdfUploadScreenState> {
 
   Future<void> translateAndUploadText(String text) async {
     try {
-      final translatedText = await translationService.translateText(text, 'en');
+      final translatedText = await translationService
+          .translateText(text, 'en')
+          .timeout(const Duration(seconds: 15), onTimeout: () {
+        throw Exception("Translation service timed out. Please try again.");
+      });
       _logger.i("pdf_upload.dart:\nTranslated Text: $translatedText");
       final indexResponse = await queryProcessingService.uploadToPinecone(
           translatedText, fileName!);
