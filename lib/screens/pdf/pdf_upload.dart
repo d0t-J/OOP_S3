@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 
 import "package:test_/utils/log/logger_util.dart";
+import "package:test_/utils/storage/recent_files_storage.dart";
 import "package:test_/modules/pdf/pdf_helper.dart";
 import "package:test_/modules/translation/translate.dart";
 import "package:test_/modules/query/query_processing.dart";
@@ -30,6 +31,32 @@ class PdfUploadScreenStateState extends State<PdfUploadScreenState> {
   Future<void> pickFile() async {
     final result = await pdfService.pickPDF();
     if (result != null) {
+      String selectedFilePath = result.files.single.path!;
+      String selectedFileName = pdfService.getFileName(selectedFilePath);
+
+      // ! Checking for recently added files
+      List<Map<String, String>> recentFiles =
+          await RecentFilesStorage.getRecentFiles();
+      Map<String, String>? recentFile = recentFiles.firstWhere(
+          (file) => file['fileName'] == selectedFileName,
+          orElse: () => {});
+
+      if (recentFile.isNotEmpty) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ChatScreen(
+              documentId: recentFile['documentId'],
+              fileName: selectedFileName,
+              isLoading: false,
+            ),
+          ),
+        );
+        return;
+      }
+
+      // ! For newly added files
+
       setState(() {
         filePath = result.files.single.path;
         fileName = pdfService.getFileName(filePath!);
@@ -78,6 +105,9 @@ class PdfUploadScreenStateState extends State<PdfUploadScreenState> {
           translatedText, fileName!);
       _logger.i("pdf_upload.dart:\nIndex Response: ${indexResponse.toJson()}");
 
+      await RecentFilesStorage.addRecentFile(
+          fileName!, indexResponse.documentId!, indexResponse.indexName!);
+
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -96,8 +126,8 @@ class PdfUploadScreenStateState extends State<PdfUploadScreenState> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Upload File",
-            style: TextStyle(fontSize: 20, color: Colors.white)),
+        title:
+            Text("OOP S3", style: TextStyle(fontSize: 20, color: Colors.white)),
         backgroundColor: const Color.fromARGB(255, 118, 98, 228),
       ),
       backgroundColor: const Color.fromARGB(255, 227, 223, 249),
