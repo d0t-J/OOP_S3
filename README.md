@@ -39,7 +39,7 @@ OOP_S3/
 
 ### Prerequisites
 
--   Flutter SDK: [Install Flutter](https://flutter.dev/docs/get-started/install)
+-   Flutter SDK: [Install Flutter](https://flutter.dev/docs/get-started/install) ( At least Flutter v3.27.1 )
 -   Dart SDK: Included with Flutter
 -   Android Studio or Visual Studio Code: Recommended IDEs for Flutter development
 
